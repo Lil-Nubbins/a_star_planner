@@ -3,19 +3,18 @@ project(a_star_planner)
 set(CMAKE_CXX_FLAGS "-Wl,--no-undefined")
 
 find_package(catkin REQUIRED COMPONENTS
-  angles
-  base_local_planner
   cmake_modules
   costmap_2d
-  dynamic_reconfigure
+  geometry_msgs
+  message_generation
   nav_core
   nav_msgs
   pluginlib
-  sensor_msgs
+  rosconsole
   roscpp
-  tf2
-  tf2_geometry_msgs
   tf2_ros
+  sensor_msgs
+  visualization_msgs
 )
 
 find_package(Eigen3 REQUIRED)
@@ -27,17 +26,19 @@ include_directories(
 add_definitions(${EIGEN3_DEFINITIONS})
 
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES a_star_planner
+  INCLUDE_DIRS 
+    include
+  LIBRARIES 
+    a_star_planner
   CATKIN_DEPENDS
-    base_local_planner
-    dynamic_reconfigure
+    geometry_msgs
+    message_runtime
+    nav_core
     nav_msgs
     pluginlib
-    sensor_msgs
     roscpp
-    tf2
-    tf2_ros
+    sensor_msgs
+    visualization_msgs
 )
 
 add_library(a_star_planner src/a_star_planner_ros.cpp)

@@ -65,6 +65,12 @@ namespace a_star_planner {
        * @brief  Destructor for the wrapper
        */
       ~AStarPlannerROS();
+
+    private:
+      costmap_2d::Costmap2DROS* costmap_ros_;
+      costmap_2d::Costmap2D* costmap_;
+      
+      bool initialized_;
   };
 };
 #endif

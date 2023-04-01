@@ -22,10 +22,20 @@ namespace a_star_planner {
 
   }
 
-  void AStarPlannerROS::initialize(
-      std::string name,
-      tf2_ros::Buffer* tf,
-      costmap_2d::Costmap2DROS* costmap_ros) {}
+  void AStarPlannerROS::initialize(std::string name, tf2_ros::Buffer* tf, costmap_2d::Costmap2DROS* costmap_ros) 
+  {
+    if(!initialized_)
+    {
+      costmap_ros_ = costmap_ros;
+      costmap_ = costmap_ros_->getCostmap();
+
+      initialized_ = true;
+    }
+    else
+    {
+      ROS_WARN("This planner has already been initialized... doing nothing");
+    }
+  }
 
   bool AStarPlannerROS::computeVelocityCommands(geometry_msgs::Twist& cmd_vel) {
     return 0;

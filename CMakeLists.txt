@@ -6,11 +6,9 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   costmap_2d
   geometry_msgs
-  message_generation
   nav_core
   nav_msgs
   pluginlib
-  rosconsole
   roscpp
   tf2_ros
   sensor_msgs
@@ -32,7 +30,6 @@ catkin_package(
     a_star_planner
   CATKIN_DEPENDS
     geometry_msgs
-    message_runtime
     nav_core
     nav_msgs
     pluginlib
@@ -41,7 +38,7 @@ catkin_package(
     visualization_msgs
 )
 
-add_library(a_star_planner src/a_star_planner_ros.cpp)
+add_library(a_star_planner src/a_star_planner.cpp)
 add_dependencies(a_star_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(a_star_planner ${catkin_LIBRARIES})
 

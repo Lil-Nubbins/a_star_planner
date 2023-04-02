@@ -48,7 +48,7 @@ namespace a_star_planner {
 
       static bool heuristicCompare(std::pair<std::pair<int,int>,int> firstCell, std::pair<std::pair<int,int>,int> secondCell);
       
-      void mapToWorld(double mx, double my, double& wx, double& wy);
+      int computeHeuristic(std::pair<int,int> currentLocation, std::pair<int,int> start, std::pair<int,int> goal);
   };
 };
 #endif

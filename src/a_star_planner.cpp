@@ -59,12 +59,31 @@ namespace a_star_planner {
   {
     unsigned int startX;
     unsigned int startY;
-    
-    std::pair<int,int> startCell;
+    unsigned int goalX;
+    unsigned int goalY;
+    int g = 0;
+    int h = 0;
+    int f = 0;
+
+
+    std::pair<std::pair<int,int>,int> currentCell;
+
     std::priority_queue<std::pair<std::pair<int,int>,int> , std::vector<std::pair<std::pair<int,int>,int>>, 
                         std::function<decltype(AStarPlannerROS::heuristicCompare)>> frontier(AStarPlannerROS::heuristicCompare);
 
+    std::vector<std::pair<std::pair<int,int>,int>> path;
+
     costmap_->worldToMap(start.pose.position.x, start.pose.position.y, startX, startY);
+    costmap_->worldToMap(goal.pose.position.x, goal.pose.position.y, goalX, goalY);
+
+    currentCell = {{startX,startY},g};
+
+    while(!(std::get<0>(std::get<0>(currentCell))!= goalX && std::get<1>(std::get<1>(currentCell))!= goalY ))
+    {
+      path.push_back(currentCell);
+
+
+    }
 
 
     return 0;
@@ -97,9 +116,12 @@ namespace a_star_planner {
     }
   }
 
-  void AStarPlannerROS::mapToWorld(double mx, double my, double& wx, double& wy) 
+  int computeHeuristic(std::pair<int,int> currentLocation, std::pair<int,int> goal)
   {
-    wx = costmap_->getOriginX() + mx * costmap_->getResolution();
-    wy = costmap_->getOriginY() + my * costmap_->getResolution();
+    int dx = std::abs(std::get<0>(currentLocation) - std::get<0>(goal));
+    int dy = std::abs(std::get<1>(currentLocation) - std::get<1>(goal));
+    int D = 1;
+    int D2 = 1;
+    return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
   }
 };

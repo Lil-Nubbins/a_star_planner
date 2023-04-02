@@ -91,7 +91,7 @@ namespace a_star_planner
 
       if(currentCell.x-1 > 0)
       {
-        if(costmap_->getCost(currentCell.x-1,currentCell.y) <= 128)
+        if(costmap_->getCost(currentCell.x-1,currentCell.y) <= 150 || costmap_->getCost(currentCell.x-1,currentCell.y) == 255)
         {
           tempCell.x = currentCell.x-1;
           tempCell.y = currentCell.y;
@@ -103,7 +103,7 @@ namespace a_star_planner
       }
       if(currentCell.x+1 < costmap_->getSizeInCellsX())
       {
-        if(costmap_->getCost(currentCell.x+1,currentCell.y) <= 128)
+        if(costmap_->getCost(currentCell.x+1,currentCell.y) <= 150 || costmap_->getCost(currentCell.x+1,currentCell.y) == 255)
         {
           tempCell.x = currentCell.x+1;
           tempCell.y = currentCell.y;
@@ -115,7 +115,7 @@ namespace a_star_planner
       }
       if(currentCell.y-1 > 0)
       {
-        if(costmap_->getCost(currentCell.x,currentCell.y-1) <= 128)
+        if(costmap_->getCost(currentCell.x,currentCell.y-1) <= 150 || costmap_->getCost(currentCell.x,currentCell.y-1) == 255)
         {
           tempCell.x = currentCell.x;
           tempCell.y = currentCell.y-1;
@@ -127,7 +127,7 @@ namespace a_star_planner
       }
       if(currentCell.y+1 < costmap_->getSizeInCellsY())
       {
-        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 150 || costmap_->getCost(currentCell.x,currentCell.y+1) == 255)
         {
           tempCell.x = currentCell.x;
           tempCell.y = currentCell.y+1;
@@ -139,7 +139,7 @@ namespace a_star_planner
       }
       if(currentCell.x-1 > 0 && currentCell.y-1 > 0)
       {
-        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        if(costmap_->getCost(currentCell.x-1,currentCell.y-1) <= 150 || costmap_->getCost(currentCell.x-1,currentCell.y-1) == 255)
         {
           tempCell.x = currentCell.x-1;
           tempCell.y = currentCell.y-1;
@@ -151,7 +151,7 @@ namespace a_star_planner
       }
       if(currentCell.x-1 > 0 && currentCell.y+1 < costmap_->getSizeInCellsY())
       {
-        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        if(costmap_->getCost(currentCell.x-1,currentCell.y+1) <= 150 || costmap_->getCost(currentCell.x-1,currentCell.y+1) == 255)
         {
           tempCell.x = currentCell.x-1;
           tempCell.y = currentCell.y+1;
@@ -163,7 +163,7 @@ namespace a_star_planner
       }
       if(currentCell.x+1 < costmap_->getSizeInCellsX() && currentCell.y-1 > 0)
       {
-        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        if(costmap_->getCost(currentCell.x+1,currentCell.y-1) <= 150 || costmap_->getCost(currentCell.x+1,currentCell.y-1) == 255)
         {
           tempCell.x = currentCell.x+1;
           tempCell.y = currentCell.y-1;
@@ -175,7 +175,7 @@ namespace a_star_planner
       }
       if(currentCell.x+1 < costmap_->getSizeInCellsX() && currentCell.y+1 < costmap_->getSizeInCellsY())
       {
-        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        if(costmap_->getCost(currentCell.x+1,currentCell.y+1) <= 150 || costmap_->getCost(currentCell.x+1,currentCell.y+1) == 255)
         {
           tempCell.x = currentCell.x+1;
           tempCell.y = currentCell.y+1;
@@ -185,11 +185,23 @@ namespace a_star_planner
           frontier.push(tempCell);
         }  
       }
+
       bool exists = false;
       bool added = false;
 
+      if(frontier.size()==0)
+      {
+        return false;
+      }
+
       while(added==false)
       {
+
+        if(frontier.size()==0)
+        {
+          return false;
+        }
+
         exists = false;
         currentCell = frontier.top();
       
@@ -200,7 +212,6 @@ namespace a_star_planner
           if(path[i].x==currentCell.x && path[i].y==currentCell.y)
           {
             exists = true;
-            ROS_INFO("Index found: %d, x val: %d, y val: %d, queue size: %lu",i, currentCell.x,currentCell.y, frontier.size());
           }
         }
 
@@ -213,12 +224,8 @@ namespace a_star_planner
       
       frontier = std::priority_queue<AStarPlannerROS::Cell , std::vector<AStarPlannerROS::Cell>, 
                         std::function<decltype(AStarPlannerROS::heuristicCompare)>>(AStarPlannerROS::heuristicCompare);
-      ROS_INFO("Output f: %d, Output h: %d, Output g: %d , Output index: %d, %d", currentCell.f, currentCell.h, currentCell.g, currentCell.x, currentCell.y);
-      ROS_INFO("Output goal: %d, %d", goalCell.x, goalCell.y);
-      ROS_INFO("_______________________________________________________________________-");
+
     }
-    ROS_INFO("Current Cell: %d, %d",currentCell.x, currentCell.y);
-    ROS_INFO("goal Cell: %d, %d",goalX, goalY);
 
     for(int i = 0; i< path.size(); i++)
     {

@@ -38,6 +38,13 @@ catkin_package(
     visualization_msgs
 )
 
+# services
+add_service_files(
+    DIRECTORY srv
+    FILES
+    MakeNavPlan.srv
+)
+
 add_library(a_star_planner src/a_star_planner.cpp)
 add_dependencies(a_star_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(a_star_planner ${catkin_LIBRARIES})

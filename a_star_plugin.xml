@@ -1,0 +1,7 @@
+<library path="lib/liba_star_planner">
+  <class name="a_star_planner/AStarPlannerROS" type="a_star_planner::AStarPlannerROS" base_class_type="nav_core::BaseGlobalPlanner">
+    <description>
+      An implementation of a local planner using a A* Star algorithm.
+    </description>
+  </class>
+</library>

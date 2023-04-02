@@ -36,6 +36,15 @@ namespace a_star_planner {
 
       ~AStarPlannerROS();
 
+      struct Cell 
+      { 
+        int x;
+        int y;
+        int g;
+        int h;
+        int f;
+      };
+
     protected:
       bool initialized_;
       costmap_2d::Costmap2D* costmap_;
@@ -46,9 +55,9 @@ namespace a_star_planner {
       std::string global_frame_;
       ros::ServiceServer make_plan_srv_;
 
-      static bool heuristicCompare(std::pair<std::pair<int,int>,int> firstCell, std::pair<std::pair<int,int>,int> secondCell);
+      static bool heuristicCompare(Cell firstCell, Cell secondCell);
       
-      int computeHeuristic(std::pair<int,int> currentLocation, std::pair<int,int> start, std::pair<int,int> goal);
+      int computeHeuristic(Cell currentLocation, Cell goal);
   };
 };
 #endif

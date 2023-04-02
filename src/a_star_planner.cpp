@@ -7,7 +7,8 @@
 //register this planner as a BaseLocalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(a_star_planner::AStarPlannerROS, nav_core::BaseGlobalPlanner)
 
-namespace a_star_planner {
+namespace a_star_planner 
+{
 
   AStarPlannerROS::AStarPlannerROS()
   : costmap_(NULL), initialized_(false){}
@@ -61,30 +62,27 @@ namespace a_star_planner {
     unsigned int startY;
     unsigned int goalX;
     unsigned int goalY;
-    int g = 0;
-    int h = 0;
-    int f = 0;
 
+    AStarPlannerROS::Cell currentCell;
 
-    std::pair<std::pair<int,int>,int> currentCell;
-
-    std::priority_queue<std::pair<std::pair<int,int>,int> , std::vector<std::pair<std::pair<int,int>,int>>, 
+    std::priority_queue<AStarPlannerROS::Cell , std::vector<AStarPlannerROS::Cell>, 
                         std::function<decltype(AStarPlannerROS::heuristicCompare)>> frontier(AStarPlannerROS::heuristicCompare);
 
-    std::vector<std::pair<std::pair<int,int>,int>> path;
+    std::vector<AStarPlannerROS::Cell> path;
 
     costmap_->worldToMap(start.pose.position.x, start.pose.position.y, startX, startY);
     costmap_->worldToMap(goal.pose.position.x, goal.pose.position.y, goalX, goalY);
 
-    currentCell = {{startX,startY},g};
+    currentCell.x = startX;
+    currentCell.y = startY;
+    currentCell.g = 0;
+    currentCell.h = 0;
+    currentCell.f = 0;
 
-    while(!(std::get<0>(std::get<0>(currentCell))!= goalX && std::get<1>(std::get<1>(currentCell))!= goalY ))
+    while(currentCell.x != goalX && currentCell.y != goalY)
     {
       path.push_back(currentCell);
-
-
     }
-
 
     return 0;
   }
@@ -104,9 +102,9 @@ namespace a_star_planner {
 
   }
 
-  bool AStarPlannerROS::heuristicCompare(std::pair<std::pair<int,int>,int> firstCell, std::pair<std::pair<int,int>,int> secondCell)
+  bool AStarPlannerROS::heuristicCompare(AStarPlannerROS::Cell firstCell, AStarPlannerROS::Cell secondCell)
   {
-    if(std::get<1>(firstCell) > std::get<1>(secondCell))
+    if(firstCell.f > secondCell.f)
     {
         return true;
     }
@@ -116,12 +114,12 @@ namespace a_star_planner {
     }
   }
 
-  int computeHeuristic(std::pair<int,int> currentLocation, std::pair<int,int> goal)
+  int computeHeuristic(AStarPlannerROS::Cell currentLocation, AStarPlannerROS::Cell goal)
   {
-    int dx = std::abs(std::get<0>(currentLocation) - std::get<0>(goal));
-    int dy = std::abs(std::get<1>(currentLocation) - std::get<1>(goal));
+    int dx = std::abs(currentLocation.x - goal.x);
+    int dy = std::abs(currentLocation.y - goal.y);
     int D = 1;
     int D2 = 1;
-    return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
+    return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
   }
 };

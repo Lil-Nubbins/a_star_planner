@@ -64,6 +64,8 @@ namespace a_star_planner
     unsigned int goalY;
 
     AStarPlannerROS::Cell currentCell;
+    AStarPlannerROS::Cell goalCell;
+    AStarPlannerROS::Cell tempCell;
 
     std::priority_queue<AStarPlannerROS::Cell , std::vector<AStarPlannerROS::Cell>, 
                         std::function<decltype(AStarPlannerROS::heuristicCompare)>> frontier(AStarPlannerROS::heuristicCompare);
@@ -79,12 +81,168 @@ namespace a_star_planner
     currentCell.h = 0;
     currentCell.f = 0;
 
-    while(currentCell.x != goalX && currentCell.y != goalY)
-    {
-      path.push_back(currentCell);
-    }
+    goalCell.x = goalX;
+    goalCell.y = goalY;
+    
+    path.push_back(currentCell);
 
-    return 0;
+    while(!(currentCell.x == goalX && currentCell.y == goalY))
+    {
+
+      if(currentCell.x-1 > 0)
+      {
+        if(costmap_->getCost(currentCell.x-1,currentCell.y) <= 128)
+        {
+          tempCell.x = currentCell.x-1;
+          tempCell.y = currentCell.y;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }
+      }
+      if(currentCell.x+1 < costmap_->getSizeInCellsX())
+      {
+        if(costmap_->getCost(currentCell.x+1,currentCell.y) <= 128)
+        {
+          tempCell.x = currentCell.x+1;
+          tempCell.y = currentCell.y;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }
+      }
+      if(currentCell.y-1 > 0)
+      {
+        if(costmap_->getCost(currentCell.x,currentCell.y-1) <= 128)
+        {
+          tempCell.x = currentCell.x;
+          tempCell.y = currentCell.y-1;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }
+      }
+      if(currentCell.y+1 < costmap_->getSizeInCellsY())
+      {
+        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        {
+          tempCell.x = currentCell.x;
+          tempCell.y = currentCell.y+1;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }     
+      }
+      if(currentCell.x-1 > 0 && currentCell.y-1 > 0)
+      {
+        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        {
+          tempCell.x = currentCell.x-1;
+          tempCell.y = currentCell.y-1;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }  
+      }
+      if(currentCell.x-1 > 0 && currentCell.y+1 < costmap_->getSizeInCellsY())
+      {
+        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        {
+          tempCell.x = currentCell.x-1;
+          tempCell.y = currentCell.y+1;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }  
+      }
+      if(currentCell.x+1 < costmap_->getSizeInCellsX() && currentCell.y-1 > 0)
+      {
+        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        {
+          tempCell.x = currentCell.x+1;
+          tempCell.y = currentCell.y-1;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }  
+      }
+      if(currentCell.x+1 < costmap_->getSizeInCellsX() && currentCell.y+1 < costmap_->getSizeInCellsY())
+      {
+        if(costmap_->getCost(currentCell.x,currentCell.y+1) <= 128)
+        {
+          tempCell.x = currentCell.x+1;
+          tempCell.y = currentCell.y+1;
+          tempCell.g = currentCell.g+1;
+          tempCell.h = computeHeuristic(tempCell, goalCell);
+          tempCell.f = tempCell.g + tempCell.h;
+          frontier.push(tempCell);
+        }  
+      }
+      bool exists = false;
+      bool added = false;
+
+      while(added==false)
+      {
+        exists = false;
+        currentCell = frontier.top();
+      
+        frontier.pop();
+
+        for(int i=0; i<path.size(); i++)
+        {
+          if(path[i].x==currentCell.x && path[i].y==currentCell.y)
+          {
+            exists = true;
+            ROS_INFO("Index found: %d, x val: %d, y val: %d, queue size: %lu",i, currentCell.x,currentCell.y, frontier.size());
+          }
+        }
+
+        if(!exists)
+        {
+          path.push_back(currentCell);
+          added=true;
+        }
+      }
+      
+      frontier = std::priority_queue<AStarPlannerROS::Cell , std::vector<AStarPlannerROS::Cell>, 
+                        std::function<decltype(AStarPlannerROS::heuristicCompare)>>(AStarPlannerROS::heuristicCompare);
+      ROS_INFO("Output f: %d, Output h: %d, Output g: %d , Output index: %d, %d", currentCell.f, currentCell.h, currentCell.g, currentCell.x, currentCell.y);
+      ROS_INFO("Output goal: %d, %d", goalCell.x, goalCell.y);
+      ROS_INFO("_______________________________________________________________________-");
+    }
+    ROS_INFO("Current Cell: %d, %d",currentCell.x, currentCell.y);
+    ROS_INFO("goal Cell: %d, %d",goalX, goalY);
+
+    for(int i = 0; i< path.size(); i++)
+    {
+      geometry_msgs::PoseStamped pose;
+      pose.header.stamp = ros::Time::now();
+      pose.header.frame_id = global_frame_;
+      
+      costmap_->mapToWorld(path[i].x, path[i].y, pose.pose.position.x, pose.pose.position.y);
+
+      pose.pose.position.z = 0.0;
+      pose.pose.orientation.x = 0.0;
+      pose.pose.orientation.y = 0.0;
+      pose.pose.orientation.z = 0.0;
+      pose.pose.orientation.w = 1.0;
+
+      plan.push_back(pose);
+    }
+    nav_msgs::Path output;
+    output.header.stamp = ros::Time::now();
+    output.header.frame_id = global_frame_;
+    output.poses = plan;
+
+    plan_pub_.publish(output);
+    return true;
   }
 
   bool AStarPlannerROS::makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp)
@@ -93,7 +251,7 @@ namespace a_star_planner
 
     resp.plan.header.stamp = ros::Time::now();
     resp.plan.header.frame_id = global_frame_;
-
+    
     return true;
   }
 
@@ -114,7 +272,7 @@ namespace a_star_planner
     }
   }
 
-  int computeHeuristic(AStarPlannerROS::Cell currentLocation, AStarPlannerROS::Cell goal)
+  int AStarPlannerROS::computeHeuristic(AStarPlannerROS::Cell currentLocation, AStarPlannerROS::Cell goal)
   {
     int dx = std::abs(currentLocation.x - goal.x);
     int dy = std::abs(currentLocation.y - goal.y);

@@ -21,14 +21,36 @@ namespace a_star_planner {
     public:
       AStarPlannerROS();
 
+      AStarPlannerROS(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
+
+      AStarPlannerROS(std::string name, costmap_2d::Costmap2D* costmap, std::string global_frame);
+
       void initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
 
-      bool makePlan(const geometry_msgs::PoseStamped& start, 
-          const geometry_msgs::PoseStamped& goal, std::vector<geometry_msgs::PoseStamped>& plan);
+      void initialize(std::string name, costmap_2d::Costmap2D* costmap, std::string global_frame);
+
+      bool makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal, 
+                    std::vector<geometry_msgs::PoseStamped>& plan);
 
       bool makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp);
 
       ~AStarPlannerROS();
+
+    protected:
+      bool initialized_;
+      costmap_2d::Costmap2D* costmap_;
+      ros::Publisher plan_pub_;
+
+    private:
+      double default_tolerance_;
+      std::string global_frame_;
+      ros::ServiceServer make_plan_srv_;
+
+      bool heuristicCompare(std::pair<std::pair<int,int>,int> firstCell, std::pair<std::pair<int,int>,int> secondCell);
+      
+      void mapToWorld(double mx, double my, double& wx, double& wy);
+
+      void worldToMap(double wx, double wy, double& mx, double& my);
   };
 };
 #endif

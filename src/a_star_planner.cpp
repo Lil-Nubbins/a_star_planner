@@ -57,6 +57,15 @@ namespace a_star_planner {
   bool AStarPlannerROS::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal, 
                 std::vector<geometry_msgs::PoseStamped>& plan)
   {
+    unsigned int startX;
+    unsigned int startY;
+    
+    std::pair<int,int> startCell;
+    std::priority_queue<std::pair<std::pair<int,int>,int> , std::vector<std::pair<std::pair<int,int>,int>>, 
+                        std::function<decltype(AStarPlannerROS::heuristicCompare)>> frontier(AStarPlannerROS::heuristicCompare);
+
+    costmap_->worldToMap(start.pose.position.x, start.pose.position.y, startX, startY);
+
 
     return 0;
   }
@@ -92,11 +101,5 @@ namespace a_star_planner {
   {
     wx = costmap_->getOriginX() + mx * costmap_->getResolution();
     wy = costmap_->getOriginY() + my * costmap_->getResolution();
-  }
-
-  void AStarPlannerROS::worldToMap(double wx, double wy, double& mx, double& my) 
-  {
-    mx= wx/costmap_->getResolution() - costmap_->getOriginX();
-    my= wy/costmap_->getResolution() - costmap_->getOriginX();
   }
 };

@@ -46,11 +46,9 @@ namespace a_star_planner {
       std::string global_frame_;
       ros::ServiceServer make_plan_srv_;
 
-      bool heuristicCompare(std::pair<std::pair<int,int>,int> firstCell, std::pair<std::pair<int,int>,int> secondCell);
+      static bool heuristicCompare(std::pair<std::pair<int,int>,int> firstCell, std::pair<std::pair<int,int>,int> secondCell);
       
       void mapToWorld(double mx, double my, double& wx, double& wy);
-
-      void worldToMap(double wx, double wy, double& mx, double& my);
   };
 };
 #endif

@@ -30,6 +30,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+                setBuildStatus("Build complete", "compile", "success");
             }
         }
     }

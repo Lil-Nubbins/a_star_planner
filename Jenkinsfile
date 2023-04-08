@@ -15,7 +15,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
-                currentBuild.setBuildStatus("Build succeeded", "SUCCESS");
+                currentBuild.currentResult = 'SUCCESS'
             }
         }
     }

@@ -25,8 +25,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
-                setBuildStatus("Build complete", "SUCCESS");
+                
             }
         }
     }
+    post {
+    always {
+      setBuildStatus("Build complete", "SUCCESS");
+    }
+  }
 }

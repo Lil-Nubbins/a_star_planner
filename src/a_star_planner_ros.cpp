@@ -43,8 +43,6 @@ namespace a_star_planner
 
       plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
 
-      private_nh.param("default_tolerance", default_tolerance_, 2.0);
-
       make_plan_srv_ =  private_nh.advertiseService("make_plan", &AStarPlannerROS::makePlanService, this);
 
       planner_ = new AStarPlanner(costmap, global_frame);
@@ -84,26 +82,5 @@ namespace a_star_planner
   AStarPlannerROS::~AStarPlannerROS()
   {
 
-  }
-
-  bool AStarPlannerROS::heuristicCompare(AStarPlannerROS::Cell first_cell, AStarPlannerROS::Cell second_cell)
-  {
-    if(first_cell.f > second_cell.f)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-  }
-
-  int AStarPlannerROS::computeHeuristic(AStarPlannerROS::Cell current_location, AStarPlannerROS::Cell goal)
-  {
-    int dx = std::abs(current_location.x - goal.x);
-    int dy = std::abs(current_location.y - goal.y);
-    int D = 1;
-    int D2 = 1;
-    return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
   }
 };

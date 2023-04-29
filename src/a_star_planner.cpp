@@ -1,7 +1,5 @@
 #include <a_star_planner/a_star_planner.h>
 
-#include <pluginlib/class_list_macros.hpp>
-
 namespace a_star_planner 
 {
 

@@ -54,13 +54,8 @@ namespace a_star_planner {
       AStarPlanner* planner_;
 
     private:
-      double default_tolerance_;
       std::string global_frame_;
       ros::ServiceServer make_plan_srv_;
-
-      static bool heuristicCompare(Cell first_cell, Cell second_cell);
-      
-      int computeHeuristic(Cell current_location, Cell goal);
   };
 };
 #endif

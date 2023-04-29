@@ -1,5 +1,5 @@
 
-#include <a_star_planner/a_star_planner.h>
+#include <a_star_planner/a_star_planner_ros.h>
 
 #include <pluginlib/class_list_macros.hpp>
 

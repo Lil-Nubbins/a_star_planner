@@ -45,7 +45,7 @@ add_service_files(
     MakeNavPlan.srv
 )
 
-add_library(a_star_planner src/a_star_planner_ros.cpp)
+add_library(a_star_planner src/a_star_planner.cpp src/a_star_planner_ros.cpp)
 add_dependencies(a_star_planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(a_star_planner ${catkin_LIBRARIES})
 

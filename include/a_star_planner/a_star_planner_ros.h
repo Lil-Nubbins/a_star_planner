@@ -15,6 +15,8 @@
 #include <vector>
 #include <queue>
 
+#include <a_star_planner/a_star_planner.h>
+
 namespace a_star_planner {
   class AStarPlannerROS : public nav_core::BaseGlobalPlanner
   {

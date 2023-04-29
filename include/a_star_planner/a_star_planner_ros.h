@@ -25,6 +25,8 @@ namespace a_star_planner {
 
       AStarPlannerROS(std::string name, costmap_2d::Costmap2D* costmap, std::string global_frame);
 
+      ~AStarPlannerROS();
+
       void initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
 
       void initialize(std::string name, costmap_2d::Costmap2D* costmap, std::string global_frame);
@@ -33,8 +35,6 @@ namespace a_star_planner {
                     std::vector<geometry_msgs::PoseStamped>& plan);
 
       bool makePlanService(nav_msgs::GetPlan::Request& req, nav_msgs::GetPlan::Response& resp);
-
-      ~AStarPlannerROS();
 
       struct Cell 
       { 
@@ -55,9 +55,9 @@ namespace a_star_planner {
       std::string global_frame_;
       ros::ServiceServer make_plan_srv_;
 
-      static bool heuristicCompare(Cell firstCell, Cell secondCell);
+      static bool heuristicCompare(Cell first_cell, Cell second_cell);
       
-      int computeHeuristic(Cell currentLocation, Cell goal);
+      int computeHeuristic(Cell current_location, Cell goal);
   };
 };
 #endif

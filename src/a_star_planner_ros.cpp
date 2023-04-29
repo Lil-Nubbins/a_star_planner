@@ -267,9 +267,9 @@ namespace a_star_planner
 
   }
 
-  bool AStarPlannerROS::heuristicCompare(AStarPlannerROS::Cell firstCell, AStarPlannerROS::Cell secondCell)
+  bool AStarPlannerROS::heuristicCompare(AStarPlannerROS::Cell first_cell, AStarPlannerROS::Cell second_cell)
   {
-    if(firstCell.f > secondCell.f)
+    if(first_cell.f > second_cell.f)
     {
         return true;
     }
@@ -279,10 +279,10 @@ namespace a_star_planner
     }
   }
 
-  int AStarPlannerROS::computeHeuristic(AStarPlannerROS::Cell currentLocation, AStarPlannerROS::Cell goal)
+  int AStarPlannerROS::computeHeuristic(AStarPlannerROS::Cell current_location, AStarPlannerROS::Cell goal)
   {
-    int dx = std::abs(currentLocation.x - goal.x);
-    int dy = std::abs(currentLocation.y - goal.y);
+    int dx = std::abs(current_location.x - goal.x);
+    int dy = std::abs(current_location.y - goal.y);
     int D = 1;
     int D2 = 1;
     return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);

@@ -21,7 +21,7 @@ namespace a_star_planner {
     public:
       AStarPlanner();
 
-      AStarPlanner(costmap_2d::Costmap2D* costmap_ros);
+      AStarPlanner(costmap_2d::Costmap2D* costmap_ros, std::string global_frame);
 
       ~AStarPlanner();
 
@@ -42,6 +42,7 @@ namespace a_star_planner {
       int computeHeuristic(Cell current_location, Cell goal);
 
       costmap_2d::Costmap2D* costmap_;
+      std::string global_frame_;
   };
 };
 #endif

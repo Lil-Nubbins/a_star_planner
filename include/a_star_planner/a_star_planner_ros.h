@@ -51,6 +51,7 @@ namespace a_star_planner {
       bool initialized_;
       costmap_2d::Costmap2D* costmap_;
       ros::Publisher plan_pub_;
+      AStarPlanner* planner_;
 
     private:
       double default_tolerance_;

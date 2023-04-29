@@ -8,10 +8,11 @@ namespace a_star_planner
   AStarPlanner::AStarPlanner()
   : costmap_(NULL){}
 
-  AStarPlanner::AStarPlanner(costmap_2d::Costmap2D* costmap_ros)
+  AStarPlanner::AStarPlanner(costmap_2d::Costmap2D* costmap_ros, std::string global_frame)
     : costmap_(NULL) 
   {
       costmap_ = costmap_ros;
+      global_frame_ = global_frame;
   }
 
   bool AStarPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal, 
@@ -184,6 +185,23 @@ namespace a_star_planner
       frontier = std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
                         std::function<decltype(AStarPlanner::heuristicCompare)>>(AStarPlanner::heuristicCompare);
 
+    }
+
+    for(int i = 0; i< path.size(); i++)
+    {
+      geometry_msgs::PoseStamped pose;
+      pose.header.stamp = ros::Time::now();
+      pose.header.frame_id = global_frame_;
+      
+      costmap_->mapToWorld(path[i].x, path[i].y, pose.pose.position.x, pose.pose.position.y);
+
+      pose.pose.position.z = 0.0;
+      pose.pose.orientation.x = 0.0;
+      pose.pose.orientation.y = 0.0;
+      pose.pose.orientation.z = 0.0;
+      pose.pose.orientation.w = 1.0;
+
+      plan.push_back(pose);
     }
 
     return true;

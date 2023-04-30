@@ -21,6 +21,8 @@ namespace a_star_planner
     unsigned int goalX;
     unsigned int goalY;
 
+    bool added = false;
+
     AStarPlanner::Cell current_cell;
     AStarPlanner::Cell goal_cell;
     AStarPlanner::Cell temp_cell;
@@ -46,47 +48,12 @@ namespace a_star_planner
 
     while(!(current_cell.x == goalX && current_cell.y == goalY))
     {
-      fillFrontier(current_cell, goal_cell, &frontier);
-
-      bool exists = false;
-      bool added = false;
-
-      if(frontier.size()==0)
+      fillFrontier(current_cell, goal_cell, &frontier); //fill the frontier with all reachable, unoccupied neighbor cells
+      added = addCheapestToPath(&current_cell, &frontier, &path); //added the lowest cost neighbor cell to the path
+      if(added == false)
       {
         return false;
       }
-
-      while(added==false)
-      {
-
-        if(frontier.size()==0)
-        {
-          return false;
-        }
-
-        exists = false;
-        current_cell = frontier.top();
-      
-        frontier.pop();
-
-        for(int i=0; i<path.size(); i++)
-        {
-          if(path[i].x==current_cell.x && path[i].y==current_cell.y)
-          {
-            exists = true;
-          }
-        }
-
-        if(!exists)
-        {
-          path.push_back(current_cell);
-          added=true;
-        }
-      }
-      
-      frontier = std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
-                        std::function<decltype(AStarPlanner::heuristicCompare)>>(AStarPlanner::heuristicCompare);
-
     }
 
     for(int i = 0; i< path.size(); i++)
@@ -210,6 +177,50 @@ namespace a_star_planner
           frontier->push(temp_cell);
         }  
       }
+  }
+
+  bool AStarPlanner::addCheapestToPath(Cell* current_cell, std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
+                        std::function<decltype(AStarPlanner::heuristicCompare)>>* frontier, std::vector<AStarPlanner::Cell>* path)
+  {
+    bool exists = false;
+    bool added = false;
+
+    if(frontier->size()==0)
+    {
+      return false;
+    }
+
+    while(added==false)
+    {
+      if(frontier->size()==0)
+      {
+        return false;
+      }
+
+      exists = false;
+      *current_cell = frontier->top();
+      
+      frontier->pop();
+
+      for(int i=0; i<path->size(); i++)
+      {
+        if((*path)[i].x==current_cell->x && (*path)[i].y==current_cell->y)
+        {
+          exists = true;
+        }
+      }
+
+      if(!exists)
+      {
+        path->push_back(*current_cell);
+        added=true;
+      }
+    }
+      
+    *frontier = std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
+               std::function<decltype(AStarPlanner::heuristicCompare)>>(AStarPlanner::heuristicCompare);
+    
+    return true;
   }
 
   bool AStarPlanner::heuristicCompare(AStarPlanner::Cell first_cell, AStarPlanner::Cell second_cell)

@@ -41,6 +41,9 @@ namespace a_star_planner {
       
       int computeHeuristic(Cell current_location, Cell goal);
 
+      void fillFrontier(Cell current_cell, Cell goal_cell, std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
+                        std::function<decltype(AStarPlanner::heuristicCompare)>>* frontier);
+
       costmap_2d::Costmap2D* costmap_;
       std::string global_frame_;
   };

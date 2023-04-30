@@ -81,102 +81,30 @@ namespace a_star_planner
   {
     AStarPlanner::Cell temp_cell;
 
-    if(current_cell.x-1 > 0)
+    //check every index around the current cell
+    for(int i=current_cell.x-1; i<=current_cell.x+1; i++)
+    {
+      for(int j=current_cell.y-1; j<=current_cell.y+1; j++)
       {
-        if(costmap_->getCost(current_cell.x-1,current_cell.y) <= 150 || costmap_->getCost(current_cell.x-1,current_cell.y) == 255)
+        //check if i/j are valid positions in the gridmap
+        if((i >= 0 && i < costmap_->getSizeInCellsX()) && (j >= 0 && j < costmap_->getSizeInCellsY()))
         {
-          temp_cell.x = current_cell.x-1;
-          temp_cell.y = current_cell.y;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
+          //don't add the current cell to the frontier
+          if(!(i == current_cell.x && j == current_cell.y))
+          {
+            if(costmap_->getCost(i,j) <= 150 || costmap_->getCost(i,j) == 255)
+            {
+              temp_cell.x = i;
+              temp_cell.y = j;
+              temp_cell.g = current_cell.g+1;
+              temp_cell.h = computeHeuristic(temp_cell, goal_cell);
+              temp_cell.f = temp_cell.g + temp_cell.h;
+              frontier->push(temp_cell);
+            }
+          }
         }
       }
-      if(current_cell.x+1 < costmap_->getSizeInCellsX())
-      {
-        if(costmap_->getCost(current_cell.x+1,current_cell.y) <= 150 || costmap_->getCost(current_cell.x+1,current_cell.y) == 255)
-        {
-          temp_cell.x = current_cell.x+1;
-          temp_cell.y = current_cell.y;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }
-      }
-      if(current_cell.y-1 > 0)
-      {
-        if(costmap_->getCost(current_cell.x,current_cell.y-1) <= 150 || costmap_->getCost(current_cell.x,current_cell.y-1) == 255)
-        {
-          temp_cell.x = current_cell.x;
-          temp_cell.y = current_cell.y-1;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }
-      }
-      if(current_cell.y+1 < costmap_->getSizeInCellsY())
-      {
-        if(costmap_->getCost(current_cell.x,current_cell.y+1) <= 150 || costmap_->getCost(current_cell.x,current_cell.y+1) == 255)
-        {
-          temp_cell.x = current_cell.x;
-          temp_cell.y = current_cell.y+1;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }     
-      }
-      if(current_cell.x-1 > 0 && current_cell.y-1 > 0)
-      {
-        if(costmap_->getCost(current_cell.x-1,current_cell.y-1) <= 150 || costmap_->getCost(current_cell.x-1,current_cell.y-1) == 255)
-        {
-          temp_cell.x = current_cell.x-1;
-          temp_cell.y = current_cell.y-1;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }  
-      }
-      if(current_cell.x-1 > 0 && current_cell.y+1 < costmap_->getSizeInCellsY())
-      {
-        if(costmap_->getCost(current_cell.x-1,current_cell.y+1) <= 150 || costmap_->getCost(current_cell.x-1,current_cell.y+1) == 255)
-        {
-          temp_cell.x = current_cell.x-1;
-          temp_cell.y = current_cell.y+1;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }  
-      }
-      if(current_cell.x+1 < costmap_->getSizeInCellsX() && current_cell.y-1 > 0)
-      {
-        if(costmap_->getCost(current_cell.x+1,current_cell.y-1) <= 150 || costmap_->getCost(current_cell.x+1,current_cell.y-1) == 255)
-        {
-          temp_cell.x = current_cell.x+1;
-          temp_cell.y = current_cell.y-1;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }  
-      }
-      if(current_cell.x+1 < costmap_->getSizeInCellsX() && current_cell.y+1 < costmap_->getSizeInCellsY())
-      {
-        if(costmap_->getCost(current_cell.x+1,current_cell.y+1) <= 150 || costmap_->getCost(current_cell.x+1,current_cell.y+1) == 255)
-        {
-          temp_cell.x = current_cell.x+1;
-          temp_cell.y = current_cell.y+1;
-          temp_cell.g = current_cell.g+1;
-          temp_cell.h = computeHeuristic(temp_cell, goal_cell);
-          temp_cell.f = temp_cell.g + temp_cell.h;
-          frontier->push(temp_cell);
-        }  
-      }
+    }
   }
 
   bool AStarPlanner::addCheapestToPath(Cell* current_cell, std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 

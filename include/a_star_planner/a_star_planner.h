@@ -16,6 +16,7 @@
 #include <queue>
 #include <map>
 #include <functional>
+#include <utility>
 
 #include <a_star_planner/cell.h>
 
@@ -35,9 +36,6 @@ namespace a_star_planner {
     private:
       costmap_2d::Costmap2D* costmap_;
       std::string global_frame_;
-      std::priority_queue<Cell , std::vector<Cell>, std::greater<Cell>> frontier_;
-      std::map<Cell, Cell> came_from_;
-      std::map<Cell, double> cost_so_far_;
   };
 };
 #endif

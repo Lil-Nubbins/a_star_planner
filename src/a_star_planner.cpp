@@ -18,31 +18,33 @@ namespace a_star_planner
     unsigned int start_y;
     unsigned int goal_x;
     unsigned int goal_y;
+
     double distance_cost;
     double heuristic_cost;
     double total_cost;
 
-    bool added = false;
+    std::pair<int,int> position,neighbor_position;
+
+    std::priority_queue<Cell , std::vector<Cell>, std::greater<Cell>> frontier;
+    std::map<std::pair<int,int>, std::pair<int,int>> came_from;
+    std::map<std::pair<int,int>, double> cost_so_far;
 
     costmap_->worldToMap(start.pose.position.x, start.pose.position.y, start_x, start_y);
     costmap_->worldToMap(goal.pose.position.x, goal.pose.position.y, goal_x, goal_y);
-    ROS_INFO("got coords %d, %d",start_x,start_y);
 
     Cell current_cell(start_x,start_y,0.0);
     Cell goal_cell(goal_x,goal_y,0.0);
     Cell temp_cell;
-    ROS_INFO("filled start and goal");
-    cost_so_far_[current_cell] = 0.0;
-    ROS_INFO("filled maps");
-    frontier_.push(current_cell);
-    ROS_INFO("filled frontier");
+    position = std::make_pair(current_cell.getX(),current_cell.getY());
+    cost_so_far[position] = 0.0;
+    frontier.push(current_cell);
 
-    while(!frontier_.empty())
+    while(!frontier.empty())
     {
       
-      current_cell = frontier_.top();
-      ROS_INFO("Current cell: %d, %d, %f",current_cell.getX(), current_cell.getY(), current_cell.getCost());
-      frontier_.pop();
+      current_cell = frontier.top();
+      frontier.pop();
+      position = std::make_pair(current_cell.getX(),current_cell.getY());
 
       if(current_cell == goal_cell)
       {
@@ -66,17 +68,19 @@ namespace a_star_planner
                 temp_cell.setX(i);
                 temp_cell.setY(j);
 
-                distance_cost = cost_so_far_[current_cell]+1; //get the distance from the start cost
+                distance_cost = cost_so_far[position]+1; //get the distance from the start cost
                 heuristic_cost = temp_cell.computeHeuristic(goal_cell); //get the distance to the goal cost from heuristic
                 total_cost = distance_cost+heuristic_cost;
                 temp_cell.setCost(total_cost); //set the Cell cost to the combined cost for the priority queue
 
+                neighbor_position = std::make_pair(temp_cell.getX(),temp_cell.getY());
+
                 //If this neighbor isn't known to us or is cheaper than the version of itself known to us, add it to our structures and track it.
-                if(!cost_so_far_.count(temp_cell) || distance_cost < cost_so_far_[temp_cell])
+                if(!cost_so_far.count(neighbor_position) || distance_cost < cost_so_far[neighbor_position])
                 {
-                  frontier_.push(temp_cell);
-                  came_from_[temp_cell] = current_cell;
-                  cost_so_far_[temp_cell] = distance_cost;
+                  frontier.push(temp_cell);
+                  came_from[neighbor_position] = position;
+                  cost_so_far[neighbor_position] = distance_cost;
                 }
               }
             }
@@ -85,13 +89,13 @@ namespace a_star_planner
       }
     }
     //convert to ROS format
-    /*while(came_from[current_cell]!=NULL)
+    while(came_from.count(position)>0)
     {
       geometry_msgs::PoseStamped pose;
       pose.header.stamp = ros::Time::now();
       pose.header.frame_id = global_frame_;
       
-      costmap_->mapToWorld(current_cell->x, current_cell->y, pose.pose.position.x, pose.pose.position.y);
+      costmap_->mapToWorld(position.first, position.second, pose.pose.position.x, pose.pose.position.y);
 
       pose.pose.position.z = 0.0;
       pose.pose.orientation.x = 0.0;
@@ -100,9 +104,9 @@ namespace a_star_planner
       pose.pose.orientation.w = 1.0;
 
       plan.push_back(pose);
-      current_cell = came_from[current_cell];
-    }*/
-
+      position = came_from[position];
+    }
+    std::reverse(plan.begin(),plan.end());
     return true;
   }
 

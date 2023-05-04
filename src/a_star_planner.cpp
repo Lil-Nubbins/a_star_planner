@@ -18,6 +18,9 @@ namespace a_star_planner
     unsigned int start_y;
     unsigned int goal_x;
     unsigned int goal_y;
+    double distance_cost;
+    double heuristic_cost;
+    double total_cost;
 
     bool added = false;
 
@@ -47,39 +50,39 @@ namespace a_star_planner
       }
       
       //check every index around the current cell
-      /*for(int i=current_cell->x-1; i<=current_cell->x+1; i++)
+      for(int i=current_cell.getX()-1; i<=current_cell.getX()+1; i++)
       {
-        for(int j=current_cell->y-1; j<=current_cell->y+1; j++)
+        for(int j=current_cell.getY()-1; j<=current_cell.getY()+1; j++)
         {
           //check if i/j are valid positions in the gridmap
           if((i >= 0 && i < costmap_->getSizeInCellsX()) && (j >= 0 && j < costmap_->getSizeInCellsY()))
           {
             //don't add the current cell to the frontier
-            if(!(i == current_cell->x && j == current_cell->y))
+            if(!(i == current_cell.getX() && j == current_cell.getY()))
             {
+              //Only consider unknown or non-obstacle neighbors
               if(costmap_->getCost(i,j) <= 150 || costmap_->getCost(i,j) == 255)
               {
-                temp_cell->x = i;
-                temp_cell->y = j;
-                temp_cell->g = current_cell->g+1;
-                temp_cell->h = computeHeuristic(*temp_cell, *goal_cell);
-                temp_cell->f = temp_cell->g + temp_cell->h;
+                temp_cell.setX(i);
+                temp_cell.setY(j);
 
-                if(!cost_so_far.count(temp_cell) || temp_cell->f < cost_so_far[temp_cell])
+                distance_cost = cost_so_far_[current_cell]+1; //get the distance from the start cost
+                heuristic_cost = temp_cell.computeHeuristic(goal_cell); //get the distance to the goal cost from heuristic
+                total_cost = distance_cost+heuristic_cost;
+                temp_cell.setCost(total_cost); //set the Cell cost to the combined cost for the priority queue
+
+                //If this neighbor isn't known to us or is cheaper than the version of itself known to us, add it to our structures and track it.
+                if(!cost_so_far_.count(temp_cell) || distance_cost < cost_so_far_[temp_cell])
                 {
-                  if(cost==0)
-                  {
-                    ros
-                  }
-                  frontier.push(*temp_cell);
-                  came_from[temp_cell] = current_cell;
-                  cost_so_far[temp_cell] = temp_cell->f;
+                  frontier_.push(temp_cell);
+                  came_from_[temp_cell] = current_cell;
+                  cost_so_far_[temp_cell] = distance_cost;
                 }
               }
             }
           }
         }
-      }*/
+      }
     }
     //convert to ROS format
     /*while(came_from[current_cell]!=NULL)

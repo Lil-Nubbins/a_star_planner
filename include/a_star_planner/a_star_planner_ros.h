@@ -1,5 +1,5 @@
-#ifndef A_STAR_PLANNER_A_STAR_PLANNER_ROS_H_
-#define A_STAR_PLANNER_A_STAR_PLANNER_ROS_H_
+#ifndef A_STAR_PLANNER_ROS_H_
+#define A_STAR_PLANNER_ROS_H_
 
 #include <ros/ros.h>
 #include <costmap_2d/costmap_2d.h>

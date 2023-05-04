@@ -14,6 +14,10 @@
 
 #include <vector>
 #include <queue>
+#include <map>
+#include <functional>
+
+#include <a_star_planner/cell.h>
 
 namespace a_star_planner {
   class AStarPlanner
@@ -27,28 +31,13 @@ namespace a_star_planner {
 
       bool makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal, 
                     std::vector<geometry_msgs::PoseStamped>& plan);
-
-      struct Cell 
-      { 
-        int x;
-        int y;
-        int g;
-        int h;
-        int f;
-      };
-
-      static bool heuristicCompare(Cell first_cell, Cell second_cell);
       
-      int computeHeuristic(Cell current_location, Cell goal);
-
-      void fillFrontier(Cell current_cell, Cell goal_cell, std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
-                        std::function<decltype(AStarPlanner::heuristicCompare)>>* frontier);
-
-      bool addCheapestToPath(Cell* current_cell, std::priority_queue<AStarPlanner::Cell , std::vector<AStarPlanner::Cell>, 
-                        std::function<decltype(AStarPlanner::heuristicCompare)>>* frontier, std::vector<AStarPlanner::Cell>* path);
-
+    private:
       costmap_2d::Costmap2D* costmap_;
       std::string global_frame_;
+      std::priority_queue<Cell , std::vector<Cell>, std::greater<Cell>> frontier_;
+      std::map<Cell, Cell> came_from_;
+      std::map<Cell, double> cost_so_far_;
   };
 };
 #endif

@@ -5,14 +5,14 @@ namespace a_star_planner
   Cell::Cell()
   : x_(0.0), y_(0.0), cost_(-1.0){}
 
-  Cell::Cell(double x, double y)
+  Cell::Cell(int x, int y)
   {
     x_ = x;
     y_ = y;
     cost_ = -1.0;
   }
 
-  Cell::Cell(double x, double y, double cost)
+  Cell::Cell(int x, int y, double cost)
   {
     x_ = x;
     y_ = y;

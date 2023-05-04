@@ -10,19 +10,19 @@ namespace a_star_planner {
     public:
       //constructors and destructor
       Cell();
-      Cell(double x, double y);
-      Cell(double x, double y, double cost);
+      Cell(int x, int y);
+      Cell(int x, int y, double cost);
       ~Cell();
 
       //getters
-      inline double getX() const    {return x_;}
-      inline double getY() const    {return y_;}
+      inline int getX() const    {return x_;}
+      inline int getY() const    {return y_;}
       inline double getCost() const {return cost_;}
 
       //setters
-      inline void setX(double new_x)      {x_ = new_x;}
-      inline void setY(double new_y)      {y_ = new_y;}
-      inline void setCost(double new_cost){cost_ = new_cost;}
+      inline void setX(int new_x)      {x_ = new_x;}
+      inline void setY(int new_y)      {y_ = new_y;}
+      inline void setCost(int new_cost){cost_ = new_cost;}
 
       //Comparison operator overloads
       inline bool operator<(const Cell& rhs)  const { return this->getCost() < rhs.getCost();}
@@ -39,8 +39,8 @@ namespace a_star_planner {
 
     private:
       //Cells have a position in 2D space and a cost
-      double x_;
-      double y_;
+      int x_;
+      int y_;
       double cost_;
   };
 };

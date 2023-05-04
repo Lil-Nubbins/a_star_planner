@@ -34,17 +34,17 @@ namespace a_star_planner
     frontier_.push(current_cell);
     ROS_INFO("filled frontier");
 
-    /*while(!frontier.empty())
+    while(!frontier_.empty())
     {
       
-      *current_cell = frontier.top();
-      ROS_INFO("Current cell: %d, %d, %d",current_cell->x, current_cell->y, current_cell->f);
-      frontier.pop();
+      current_cell = frontier_.top();
+      ROS_INFO("Current cell: %d, %d, %f",current_cell.getX(), current_cell.getY(), current_cell.getCost());
+      frontier_.pop();
 
       if(current_cell == goal_cell)
       {
         break;
-      }*/
+      }
       
       //check every index around the current cell
       /*for(int i=current_cell->x-1; i<=current_cell->x+1; i++)
@@ -79,8 +79,8 @@ namespace a_star_planner
             }
           }
         }
-      }
-    }*/
+      }*/
+    }
     //convert to ROS format
     /*while(came_from[current_cell]!=NULL)
     {
